@@ -71,11 +71,18 @@ describe('parsearAcorde · sufijos', () => {
     expect(parsearAcorde('Dom')).toEqual(ac({ raiz: 'DO', sufijo: 'm' }));
   });
 
-  it('el sufijo se preserva literalmente aunque no se reconozca', () => {
+  it('el sufijo se preserva literalmente, por encadenado que sea', () => {
     // El motor no interpreta armonia: solo mueve la fundamental.
-    expect(parsearAcorde('DOchorrada')).toEqual(
-      ac({ raiz: 'DO', sufijo: 'chorrada' }),
+    expect(parsearAcorde('MIm7sus4add9')).toEqual(
+      ac({ raiz: 'MI', sufijo: 'm7sus4add9' }),
     );
+  });
+
+  it('acepta la fundamental en mayusculas y capitalizada', () => {
+    // Convencion del cantoral: MAYUSCULAS para mayor, Capitalizado para menor.
+    expect(parsearAcorde('SOL')?.raiz).toBe('SOL');
+    expect(parsearAcorde('Sol')?.raiz).toBe('SOL');
+    expect(parsearAcorde('Solm')?.raiz).toBe('SOL');
   });
 });
 
@@ -88,6 +95,13 @@ describe('parsearAcorde · acordes con bajo (slash chords)', () => {
     ['SIb/RE', ac({ raiz: 'SI', alteracion: 'b', bajo: 'RE' })],
   ] as const)('%s', (token, esperado) => {
     expect(parsearAcorde(token)).toEqual(esperado);
+  });
+
+  it('normaliza tambien la nota del bajo', () => {
+    expect(parsearAcorde('Sol/si')).toEqual(ac({ raiz: 'SOL', bajo: 'SI' }));
+    expect(parsearAcorde('Mim/SOL')).toEqual(
+      ac({ raiz: 'MI', sufijo: 'm', bajo: 'SOL' }),
+    );
   });
 });
 
@@ -129,6 +143,22 @@ describe('parsearAcorde · tokens no reconocidos devuelven null', () => {
   it('rechaza las alteraciones dobles', () => {
     expect(parsearAcorde('SOLbb')).toBeNull();
     expect(parsearAcorde('DO##')).toBeNull();
+  });
+
+  it('rechaza las anotaciones que empiezan como un acorde', () => {
+    // Al aceptar la fundamental capitalizada, "Solo" seria SOL + sufijo "o".
+    // Lo impide la lista blanca de caracteres con los que puede empezar un sufijo.
+    for (const anotacion of [
+      'Solo',
+      'Silencio',
+      'Refran',
+      'Final',
+      'Estribillo',
+      'Puente',
+      'Bis',
+    ]) {
+      expect(parsearAcorde(anotacion), anotacion).toBeNull();
+    }
   });
 });
 
