@@ -50,3 +50,12 @@ export const LATINA_A_AMERICANA: Record<NotaLatina, string> = {
   LA: "A",
   SI: "B",
 };
+
+export function indiceCromatico(
+  raiz: NotaLatina,
+  alteracion: Alteracion,
+): number {
+  const base = ESCALA_SOSTENIDOS.indexOf(raiz);
+  const desplazamiento = alteracion === "#" ? 1 : alteracion === "b" ? -1 : 0;
+  return (base + desplazamiento + 12) % 12;
+}
