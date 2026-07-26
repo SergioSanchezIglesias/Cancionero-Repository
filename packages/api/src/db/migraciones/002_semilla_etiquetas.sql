@@ -1,0 +1,15 @@
+INSERT INTO etiqueta (id, nombre, grupo, orden) VALUES
+  (1,  'Entrada',           'misa', 1),
+  (2,  'Señor ten Piedad',  'misa', 2),
+  (3,  'Aleluya',           'misa', 3),
+  (4,  'Ofertorio',         'misa', 4),
+  (5,  'Santo',             'misa', 5),
+  (6,  'Cordero',           'misa', 6),
+  (7,  'Comunión',          'misa', 7),
+  (8,  'Alma de Cristo',    'misa', 8),
+  (9,  'Virgen María',      'misa', 9),
+  (10, 'Exposición',        'adoracion_alabanza', 10),
+  (11, 'Invocación ES',     'adoracion_alabanza', 11),
+  (12, 'Alabanza',          'adoracion_alabanza', 12),
+  (13, 'Sanación',          'adoracion_alabanza', 13),
+  (14, 'Adoración',         'adoracion_alabanza', 14);
