@@ -122,6 +122,17 @@ describe("aplicarMigraciones", () => {
     expect(aplicarMigraciones(bd, carpeta)).toEqual([]);
   });
 
+  it("rechaza una migración vacía en vez de darla por aplicada", () => {
+    const carpeta = crearCarpetaDeMigraciones(base, {
+      "001_vacia.sql": "   \n  ",
+    });
+
+    // Sin esta protección quedaría registrada, y si mañana se escribe el SQL
+    // dentro ya nunca se aplicaría.
+    expect(() => aplicarMigraciones(bd, carpeta)).toThrow(/001_vacia\.sql/);
+    expect(() => aplicarMigraciones(bd, carpeta)).toThrow(/001_vacia\.sql/);
+  });
+
   it("indica qué migración ha fallado", () => {
     const carpeta = crearCarpetaDeMigraciones(base, {
       "001_rota.sql": "ESTO NO ES SQL VÁLIDO;",

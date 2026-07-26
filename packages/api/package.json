@@ -7,10 +7,11 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json && rm -rf dist/db/migraciones && cp -R src/db/migraciones dist/db/",
+    "migrar": "npm run build && node dist/migrar.js",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
-    "pretest": "tsc --noEmit"
+    "typecheck": "tsc -p tsconfig.test.json",
+    "pretest": "tsc -p tsconfig.test.json"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.1"

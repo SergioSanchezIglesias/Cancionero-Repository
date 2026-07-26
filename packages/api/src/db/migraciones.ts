@@ -30,6 +30,10 @@ export function aplicarMigraciones(
   for (const nombre of pendientes) {
     const sql = readFileSync(join(carpeta, nombre), "utf8");
 
+    if (sql.trim() === "") {
+      throw new Error(`La migración ${nombre} está vacía`);
+    }
+
     const aplicar = bd.transaction(() => {
       bd.exec(sql);
       registrar.run(nombre);
