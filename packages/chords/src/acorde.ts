@@ -21,6 +21,10 @@ const RE_ACORDE = new RegExp(
 
 const INICIO_SUFIJO = /^[mM0-9sdaA+\-°º( ]/;
 
+export function sufijoValido(sufijo: string): boolean {
+  return sufijo === "" || INICIO_SUFIJO.test(sufijo);
+}
+
 export function parsearAcorde(token: string): AcordeParseado | null {
   let cuerpo = token;
   let prefijo = "";
@@ -50,7 +54,7 @@ export function parsearAcorde(token: string): AcordeParseado | null {
     bajoBruto === undefined ? null : (bajoBruto.toUpperCase() as NotaLatina);
   const bajoAlteracion = bajoAltBruta.toLowerCase() as Alteracion;
 
-  if (sufijo !== "" && !INICIO_SUFIJO.test(sufijo)) return null;
+  if (!sufijoValido(sufijo)) return null;
 
   const acordeParseado: AcordeParseado = {
     prefijo,
