@@ -1,0 +1,25 @@
+{
+  "name": "@cancionero/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && rm -rf dist/db/migraciones && cp -R src/db/migraciones dist/db/",
+    "migrar": "npm run build && node dist/migrar.js",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.test.json",
+    "pretest": "tsc -p tsconfig.test.json"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.15.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  }
+}
