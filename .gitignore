@@ -1,0 +1,31 @@
+# OpenCode
+.atl/
+
+# GGA
+.gga
+
+# IA AGENTS
+AGENTS.md
+
+# Dependencias
+node_modules/
+
+# Builds
+dist/
+*.tsbuildinfo
+
+# Tests
+coverage/
+
+# Base de datos (nunca versionar el repertorio)
+*.db
+*.db-wal
+*.db-shm
+data/
+
+# Entorno
+.env
+.env.local
+
+# Sistema
+.DS_Store
