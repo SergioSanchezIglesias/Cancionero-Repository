@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
-import { toSignal } from "@angular/core/rxjs-interop";
+import { toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { RouterLink } from "@angular/router";
 import { LucideAngularModule, Plus, Search } from "lucide-angular";
 import { catchError, map, of, switchMap } from "rxjs";
-import { toObservable } from "@angular/core/rxjs-interop";
 import type { CancionResumen } from "../../core/interfaces/cancion.interface";
 import {
   GRUPOS_DE_ETIQUETA,

@@ -1,0 +1,18 @@
+@for (linea of lineas(); track $index) {
+  @if (linea.segmentos.length === 0) {
+    <div class="linea linea--vacia"></div>
+  } @else {
+    <div class="linea" [class.linea--negrita]="linea.negrita">
+      @for (segmento of linea.segmentos; track $index) {
+        <span class="segmento">
+          @if (segmento.acorde) {
+            <span class="segmento__acorde">{{ segmento.acorde }}</span>
+          } @else {
+            <span class="segmento__acorde segmento__acorde--hueco"></span>
+          }
+          <span class="segmento__letra">{{ segmento.texto }}</span>
+        </span>
+      }
+    </div>
+  }
+}
