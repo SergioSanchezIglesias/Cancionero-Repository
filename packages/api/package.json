@@ -14,11 +14,16 @@
     "pretest": "tsc -p tsconfig.test.json"
   },
   "dependencies": {
-    "better-sqlite3": "^13.0.1"
+    "@cancionero/chords": "^0.1.0",
+    "better-sqlite3": "^13.0.1",
+    "express": "^5.2.1"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^5.0.6",
     "@types/node": "^22.15.0",
+    "@types/supertest": "^7.2.1",
+    "supertest": "^7.2.2",
     "typescript": "^7.0.2",
     "vitest": "^4.1.10"
   }
