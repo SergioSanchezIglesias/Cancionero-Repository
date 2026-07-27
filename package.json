@@ -7,6 +7,8 @@
   ],
   "scripts": {
     "test": "npm run build -w packages/chords && npm run test --workspaces --if-present",
-    "build": "npm run build -w packages/chords && npm run build -w packages/api"
+    "build": "npm run build -w packages/chords && npm run build -w packages/api && npm run build -w packages/web",
+    "dev:web": "npm run start -w packages/web",
+    "dev:api": "npm run dev -w packages/api"
   }
 }
