@@ -1,0 +1,104 @@
+<header class="cabecera">
+  <div class="cabecera__fila">
+    <div class="rotulo">
+      <h1 class="rotulo__titulo">Biblioteca</h1>
+      <p class="rotulo__sub">Todas tus canciones en un solo sitio</p>
+    </div>
+
+    <a class="boton boton--principal" routerLink="/canciones/nueva">
+      <lucide-angular [img]="iconoNueva" [size]="16" />
+      Nueva canción
+    </a>
+  </div>
+
+  <div class="cabecera__fila">
+    <label class="buscador">
+      <lucide-angular [img]="iconoBuscar" [size]="16" />
+      <input
+        type="search"
+        class="buscador__campo"
+        placeholder="Buscar por título o por letra…"
+        aria-label="Buscar por título o por letra"
+        [value]="filtro.texto()"
+        (input)="alEscribir($event)"
+      />
+    </label>
+
+    <span class="contador">
+      @if (!cargando()) {
+        {{ canciones().length }}
+        {{ canciones().length === 1 ? "canción" : "canciones" }}
+      }
+    </span>
+  </div>
+
+  <div class="filtros">
+    <div class="filtros__fila">
+      <span class="filtros__grupo">Etiquetas</span>
+      <div class="filtros__chips">
+        <button
+          type="button"
+          class="chip"
+          [class.chip--activo]="!filtro.hayFiltro()"
+          (click)="filtro.limpiar()"
+        >
+          Todas
+        </button>
+      </div>
+    </div>
+
+    @for (grupo of grupos(); track grupo.clave) {
+      <div class="filtros__fila">
+        <span class="filtros__grupo">{{ grupo.nombre }}</span>
+
+        <div class="filtros__chips">
+          @for (etiqueta of grupo.etiquetas; track etiqueta.id) {
+            <button
+              type="button"
+              class="chip"
+              [class.chip--marcado]="filtro.estaMarcada(etiqueta.id)"
+              [attr.aria-pressed]="filtro.estaMarcada(etiqueta.id)"
+              (click)="filtro.alternarEtiqueta(etiqueta.id)"
+            >
+              {{ etiqueta.nombre }}
+              <span class="chip__total">{{ etiqueta.total }}</span>
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</header>
+
+<section class="listado">
+  @if (error(); as textoDelError) {
+    <p class="aviso aviso--error">{{ textoDelError }}</p>
+  } @else if (cargando()) {
+    <p class="aviso">Cargando el repertorio…</p>
+  } @else if (canciones().length === 0) {
+    <p class="aviso">
+      @if (filtro.hayFiltro()) {
+        Ninguna canción coincide con este filtro.
+      } @else {
+        Todavía no hay canciones. Empieza por crear la primera.
+      }
+    </p>
+  } @else {
+    <ul class="lista">
+      @for (cancion of canciones(); track cancion.id) {
+        <li>
+          <a class="fila" [routerLink]="['/canciones', cancion.id, 'editar']">
+            <span class="fila__tono">{{ cancion.tonoOriginal }}</span>
+            <span class="fila__titulo">{{ cancion.titulo }}</span>
+
+            <span class="fila__etiquetas">
+              @for (nombre of nombresDe(cancion.etiquetas); track nombre) {
+                <span class="etiqueta">{{ nombre }}</span>
+              }
+            </span>
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</section>

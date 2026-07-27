@@ -13,3 +13,12 @@ export interface Etiqueta {
   /** Cuántas canciones la tienen asignada. Alimenta el contador de los chips. */
   readonly total: number;
 }
+
+/** Los dos bloques en los que se presentan los filtros: 9 + 5. */
+export const GRUPOS_DE_ETIQUETA: readonly {
+  readonly clave: GrupoEtiqueta;
+  readonly nombre: string;
+}[] = [
+  { clave: "misa", nombre: "Misa" },
+  { clave: "adoracion_alabanza", nombre: "Adoración y Alabanza" },
+];
