@@ -1,0 +1,142 @@
+<form class="editor" [formGroup]="formulario" (ngSubmit)="guardar()">
+  <header class="barra">
+    <div class="barra__lado">
+      <a class="boton boton--icono" routerLink="/biblioteca" aria-label="Volver">
+        <lucide-angular [img]="iconoVolver" [size]="17" />
+      </a>
+      <h1 class="barra__titulo">
+        {{ esNueva() ? "Nueva canción" : "Editar canción" }}
+      </h1>
+    </div>
+
+    <div class="barra__lado">
+      <a class="boton" routerLink="/biblioteca">Cancelar</a>
+      <button
+        type="submit"
+        class="boton boton--principal"
+        [disabled]="guardando()"
+      >
+        <lucide-angular [img]="iconoGuardar" [size]="15" />
+        {{ guardando() ? "Guardando…" : "Guardar" }}
+      </button>
+    </div>
+  </header>
+
+  @if (error(); as textoDelError) {
+    <p class="aviso aviso--error">{{ textoDelError }}</p>
+  }
+
+  <div class="campos">
+    <label class="campo campo--titulo">
+      <span class="campo__nombre">Título</span>
+      <input
+        class="campo__valor"
+        type="text"
+        formControlName="titulo"
+        placeholder="Ven a celebrar"
+      />
+    </label>
+
+    <label class="campo campo--tono">
+      <span class="campo__nombre">Tono original</span>
+      <select class="campo__valor" formControlName="tonoOriginal">
+        @for (tono of tonos; track tono) {
+          <option [value]="tono">{{ tono }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="campo campo--cantoral">
+      <span class="campo__nombre">Cantoral de origen</span>
+      <input
+        class="campo__valor"
+        type="text"
+        formControlName="cantoralOrigen"
+        placeholder="Abrir Abrir"
+      />
+    </label>
+  </div>
+
+  <div class="etiquetas">
+    <span class="campo__nombre">Etiquetas</span>
+
+    <div class="etiquetas__grupos">
+      @for (grupo of grupos(); track grupo.clave) {
+        <div class="etiquetas__fila">
+          <span class="etiquetas__grupo">{{ grupo.nombre }}</span>
+
+          <div class="etiquetas__chips">
+            @for (etiqueta of grupo.etiquetas; track etiqueta.id) {
+              <button
+                type="button"
+                class="chip"
+                [class.chip--marcado]="estaMarcada(etiqueta.id)"
+                [attr.aria-pressed]="estaMarcada(etiqueta.id)"
+                (click)="alternarEtiqueta(etiqueta.id)"
+              >
+                {{ etiqueta.nombre }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="panel">
+    <section class="panel__mitad panel__mitad--editor">
+      <header class="panel__cabecera">
+        <span class="panel__rotulo">Editor</span>
+
+        <button
+          type="button"
+          class="boton boton--menudo"
+          title="Marcar la línea como estribillo"
+          (click)="marcarEstribillo()"
+        >
+          <lucide-angular [img]="iconoNegrita" [size]="14" />
+          Estribillo
+        </button>
+
+        <button
+          type="button"
+          class="boton boton--menudo"
+          title="Insertar un acorde en el cursor"
+          (click)="insertarAcorde()"
+        >
+          <lucide-angular [img]="iconoAcorde" [size]="14" />
+          Acorde
+        </button>
+      </header>
+
+      <textarea
+        #areaContenido
+        class="fuente"
+        formControlName="contenido"
+        spellcheck="false"
+        aria-label="Letra con acordes"
+        placeholder="Pega aquí la letra y coloca los acordes entre corchetes: [SOL]VEN A CELE[SIm]BRAR"
+      ></textarea>
+
+      <p class="pista">
+        El acorde se ancla a la sílaba que va justo detrás del corchete. Una
+        línea en blanco separa estrofas.
+      </p>
+    </section>
+
+    <section class="panel__mitad">
+      <header class="panel__cabecera">
+        <span class="panel__rotulo">Vista previa</span>
+        <span class="insignia">En vivo</span>
+      </header>
+
+      <div class="previa">
+        @if (titulo()) {
+          <h2 class="previa__titulo">{{ titulo() }}</h2>
+        }
+
+        <app-letra-con-acordes [contenido]="contenido()" tamano="previa" />
+      </div>
+    </section>
+  </div>
+</form>

@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { escribirNota, transponerTono, usaBemoles } from './tono.js';
+import { parsearAcorde } from './acorde.js';
+import {
+  escribirNota,
+  TONOS,
+  TONOS_MAYORES,
+  TONOS_MENORES,
+  transponerTono,
+  usaBemoles,
+} from './tono.js';
 
 // Tabla de la seccion 2.4 de la especificacion tecnica.
 
@@ -103,5 +111,31 @@ describe('transponerTono', () => {
   it('devuelve intacto un tono que no reconoce', () => {
     expect(transponerTono('loquesea', 2)).toBe('loquesea');
     expect(transponerTono('', 2)).toBe('');
+  });
+});
+
+describe('catalogo de tonos', () => {
+  it('ofrece los doce mayores y los doce menores', () => {
+    expect(TONOS_MAYORES).toHaveLength(12);
+    expect(TONOS_MENORES).toHaveLength(12);
+    expect(TONOS).toHaveLength(24);
+  });
+
+  it('todos los tonos del catalogo son acordes que el motor reconoce', () => {
+    for (const tono of TONOS) {
+      expect(parsearAcorde(tono)).not.toBeNull();
+    }
+  });
+
+  it('transponer un tono del catalogo devuelve otro tono del catalogo', () => {
+    for (const tono of TONOS) {
+      for (let semitonos = -12; semitonos <= 12; semitonos++) {
+        expect(TONOS).toContain(transponerTono(tono, semitonos));
+      }
+    }
+  });
+
+  it('no repite ningun tono', () => {
+    expect(new Set(TONOS).size).toBe(TONOS.length);
   });
 });
