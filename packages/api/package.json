@@ -8,6 +8,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && rm -rf dist/db/migraciones && cp -R src/db/migraciones dist/db/",
     "migrar": "npm run build && node dist/migrar.js",
+    "start": "node dist/servidor.js",
+    "dev": "npm run build && node dist/servidor.js",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.test.json",
