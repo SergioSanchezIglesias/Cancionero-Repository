@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
+import { SidebarComponent } from "./shared/components/sidebar/sidebar.component";
 
 @Component({
   selector: "app-raiz",
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, SidebarComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: "<router-outlet />",
+  templateUrl: "./app.html",
+  styleUrl: "./app.css",
 })
 export class App {}

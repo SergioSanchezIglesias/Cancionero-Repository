@@ -1,0 +1,125 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 248px;
+  flex: 0 0 248px;
+  padding: 24px 16px;
+  background: var(--bg-warm);
+  border-right: 1px solid var(--border);
+}
+
+/* Marca */
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 4px;
+}
+
+.marca__sello {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border-radius: 11px;
+  background: var(--primary);
+  color: var(--bg);
+}
+
+.marca__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.marca__nombre {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.marca__parroquia {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+/* Navegación */
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav__enlace {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: var(--radio-m);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+a.nav__enlace:hover {
+  background: var(--bg-warm-2);
+}
+
+.nav__enlace--activo {
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.nav__enlace--inactivo {
+  color: var(--text-3);
+  cursor: default;
+}
+
+.nav__pendiente {
+  margin-left: auto;
+  padding: 2px 6px;
+  border-radius: var(--radio-s);
+  background: var(--bg-warm-2);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-3);
+}
+
+.relleno {
+  flex: 1 1 auto;
+}
+
+/* Tarjeta de copia de seguridad */
+
+.respaldo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 10px;
+  background: var(--ochre-soft);
+}
+
+.respaldo__titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ochre);
+}
+
+.respaldo__detalle {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-2);
+}

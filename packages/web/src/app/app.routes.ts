@@ -1,5 +1,5 @@
 import type { Routes } from "@angular/router";
 
-export const rutas: Routes = [
+export const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "biblioteca" },
 ];

@@ -3,10 +3,10 @@ import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import { describe, expect, it } from "vitest";
 import { App } from "./app";
-import { rutas } from "./app.rutas";
+import { routes } from "./app.routes";
 
 describe("Arranque de la aplicación", () => {
-  it("monta el componente raíz sin errores", async () => {
+  it("monta el shell con la barra lateral", async () => {
     TestBed.configureTestingModule({
       imports: [App],
       providers: [provideZonelessChangeDetection(), provideRouter([])],
@@ -15,11 +15,14 @@ describe("Arranque de la aplicación", () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
 
-    expect(fixture.componentInstance).toBeTruthy();
+    const elemento = fixture.nativeElement as HTMLElement;
+
+    expect(elemento.querySelector("app-sidebar")).not.toBeNull();
+    expect(elemento.textContent).toContain("Biblioteca");
   });
 
   it("la ruta vacía lleva a la biblioteca", () => {
-    const raiz = rutas.find((ruta) => ruta.path === "");
+    const raiz = routes.find((ruta) => ruta.path === "");
 
     expect(raiz?.redirectTo).toBe("biblioteca");
   });

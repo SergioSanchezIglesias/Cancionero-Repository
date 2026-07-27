@@ -4,12 +4,12 @@ import {
   type ApplicationConfig,
 } from "@angular/core";
 import { provideRouter, withComponentInputBinding } from "@angular/router";
-import { rutas } from "./app.rutas";
+import { routes } from "./app.routes";
 
 export const configuracionApp: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(withFetch()),
-    provideRouter(rutas, withComponentInputBinding()),
+    provideRouter(routes, withComponentInputBinding()),
   ],
 };

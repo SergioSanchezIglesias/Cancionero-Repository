@@ -2,7 +2,7 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/fraunces";
 
-@import "./estilos/tokens.css";
+@import "./styles/tokens.css";
 
 *,
 *::before,
