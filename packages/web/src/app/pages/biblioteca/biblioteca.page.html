@@ -86,8 +86,9 @@
   } @else {
     <ul class="lista">
       @for (cancion of canciones(); track cancion.id) {
-        <li>
-          <a class="fila" [routerLink]="['/canciones', cancion.id, 'editar']">
+        <li class="fila">
+          <!-- La fila entera abre el visor: leer es lo que más se hace. -->
+          <a class="fila__enlace" [routerLink]="['/canciones', cancion.id]">
             <span class="fila__tono">{{ cancion.tonoOriginal }}</span>
             <span class="fila__titulo">{{ cancion.titulo }}</span>
 
@@ -96,6 +97,15 @@
                 <span class="etiqueta">{{ nombre }}</span>
               }
             </span>
+          </a>
+
+          <a
+            class="fila__accion"
+            [routerLink]="['/canciones', cancion.id, 'editar']"
+            [attr.aria-label]="'Editar ' + cancion.titulo"
+            title="Editar"
+          >
+            <lucide-angular [img]="iconoEditar" [size]="15" />
           </a>
         </li>
       }

@@ -82,6 +82,19 @@ describe("BibliotecaPage", () => {
     expect(filas()[0]?.textContent).toContain("RE");
   });
 
+  it("la fila lleva al visor y el lápiz al editor", async () => {
+    await pintar();
+
+    const primera = filas()[0];
+
+    expect(primera?.querySelector(".fila__enlace")?.getAttribute("href")).toBe(
+      "/canciones/3",
+    );
+    expect(primera?.querySelector(".fila__accion")?.getAttribute("href")).toBe(
+      "/canciones/3/editar",
+    );
+  });
+
   it("traduce los identificadores de etiqueta a sus nombres", async () => {
     await pintar();
 
