@@ -4,3 +4,4 @@ export * from "./tono.js";
 export * from "./transponer.js";
 export * from "./notacion.js";
 export * from "./contenido.js";
+export * from "./lectura.js";
