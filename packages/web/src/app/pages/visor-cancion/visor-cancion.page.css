@@ -207,7 +207,7 @@
 .conmutador__opcion {
   padding: 7px 14px;
   border: none;
-  border-radius: 7px;
+  border-radius: var(--radio-s);
   background: transparent;
   font-size: 12px;
   font-weight: 600;
@@ -281,7 +281,7 @@
 .cancion__acento {
   width: 52px;
   height: 3px;
-  border-radius: 2px;
+  border-radius: var(--radio-s);
   background: var(--primary);
 }
 
@@ -294,7 +294,7 @@
 
 .dato {
   padding: 6px 11px;
-  border-radius: 7px;
+  border-radius: var(--radio-s);
   background: var(--bg-warm-2);
   font-size: 12px;
   font-weight: 500;
@@ -307,7 +307,7 @@
 
 .etiqueta {
   padding: 6px 11px;
-  border-radius: 7px;
+  border-radius: var(--radio-s);
   background: var(--ochre-soft);
   font-size: 12px;
   font-weight: 600;
