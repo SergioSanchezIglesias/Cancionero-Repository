@@ -1,0 +1,251 @@
+<header class="barra">
+  <div class="rotulo">
+    <h1 class="rotulo__titulo">Nuevo cancionero</h1>
+    <p class="rotulo__sub">
+      Elige las canciones, ordénalas y genera el PDF para el coro
+    </p>
+  </div>
+
+  <div class="barra__acciones">
+    <button
+      type="button"
+      class="boton"
+      data-prueba="vista-previa"
+      [disabled]="!listoParaGenerar() || generando()"
+      (click)="vistaPrevia()"
+    >
+      <lucide-angular [img]="iconoPrevia" [size]="15" />
+      Vista previa
+    </button>
+
+    <button
+      type="button"
+      class="boton boton--principal"
+      data-prueba="generar-arriba"
+      [disabled]="!listoParaGenerar() || generando()"
+      (click)="generar()"
+    >
+      <lucide-angular [img]="iconoPdf" [size]="15" />
+      {{ generando() ? "Generando…" : "Generar PDF" }}
+    </button>
+  </div>
+</header>
+
+@if (error(); as textoDelError) {
+  <p class="aviso aviso--error">{{ textoDelError }}</p>
+}
+
+<div class="partido">
+  <section class="elector" aria-label="Añadir desde la biblioteca">
+    <header class="elector__cabecera">
+      <span class="epigrafe">Añadir desde la biblioteca</span>
+
+      <label class="buscador">
+        <lucide-angular [img]="iconoBuscar" [size]="16" />
+        <input
+          type="search"
+          class="buscador__campo"
+          placeholder="Buscar por título o por letra…"
+          aria-label="Buscar por título o por letra"
+          [value]="texto()"
+          (input)="alEscribir($event)"
+        />
+      </label>
+
+      <div class="filtros">
+        @for (grupo of grupos(); track grupo.clave) {
+          <div class="filtros__fila">
+            <span class="filtros__grupo">{{ grupo.nombre }}</span>
+
+            <div class="filtros__chips">
+              @for (etiqueta of grupo.etiquetas; track etiqueta.id) {
+                <button
+                  type="button"
+                  class="chip"
+                  [class.chip--marcado]="estaFiltrada(etiqueta.id)"
+                  [attr.aria-pressed]="estaFiltrada(etiqueta.id)"
+                  (click)="alternarEtiqueta(etiqueta.id)"
+                >
+                  {{ etiqueta.nombre }}
+                  <span class="chip__total">{{ etiqueta.total }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <p class="elector__cuenta">
+        {{ candidatas().length }}
+        {{ candidatas().length === 1 ? "canción" : "canciones" }}
+        @if (etiquetasFiltradas().length > 0) {
+          con las etiquetas elegidas
+        }
+      </p>
+    </header>
+
+    <ul class="candidatas">
+      @for (cancion of candidatas(); track cancion.id) {
+        <li>
+          <button
+            type="button"
+            class="candidata"
+            [class.candidata--elegida]="estaElegida(cancion.id)"
+            [attr.aria-pressed]="estaElegida(cancion.id)"
+            (click)="alternar(cancion.id)"
+          >
+            <span class="marca" [class.marca--puesta]="estaElegida(cancion.id)">
+              @if (estaElegida(cancion.id)) {
+                <lucide-angular [img]="iconoMarca" [size]="12" />
+              }
+            </span>
+
+            <span class="candidata__titulo">{{ cancion.titulo }}</span>
+            <span class="candidata__tono">{{ cancion.tonoOriginal }}</span>
+          </button>
+        </li>
+      } @empty {
+        <li class="vacio">Ninguna canción coincide con este filtro.</li>
+      }
+    </ul>
+  </section>
+
+  <section class="cancionero" aria-label="Tu cancionero">
+    <header class="cancionero__cabecera">
+      <div class="cancionero__fila">
+        <span class="epigrafe">Tu cancionero</span>
+        <span class="cuenta">
+          {{ elegidas().length }}
+          {{ elegidas().length === 1 ? "canción" : "canciones" }}
+        </span>
+      </div>
+
+      <input
+        type="text"
+        class="titulo"
+        placeholder="Título del cancionero (p. ej. Domingo 12 de marzo)"
+        aria-label="Título del cancionero"
+        [value]="titulo()"
+        (input)="alTitular($event)"
+      />
+    </header>
+
+    <ol class="orden">
+      @for (entrada of cancionero(); track entrada.id) {
+        <li class="entrada">
+          <span class="entrada__numero">{{ entrada.posicion + 1 }}</span>
+          <span class="entrada__titulo">{{ entrada.titulo }}</span>
+          <span class="entrada__tono">{{ entrada.tonoOriginal }}</span>
+
+          <button
+            type="button"
+            class="icono"
+            [attr.aria-label]="'Subir ' + entrada.titulo"
+            [disabled]="entrada.posicion === 0"
+            (click)="mover(entrada.posicion, -1)"
+          >
+            <lucide-angular [img]="iconoSubir" [size]="14" />
+          </button>
+
+          <button
+            type="button"
+            class="icono"
+            [attr.aria-label]="'Bajar ' + entrada.titulo"
+            [disabled]="entrada.posicion === cancionero().length - 1"
+            (click)="mover(entrada.posicion, 1)"
+          >
+            <lucide-angular [img]="iconoBajar" [size]="14" />
+          </button>
+
+          <button
+            type="button"
+            class="icono icono--quitar"
+            [attr.aria-label]="'Quitar ' + entrada.titulo"
+            (click)="quitar(entrada.id)"
+          >
+            <lucide-angular [img]="iconoQuitar" [size]="14" />
+          </button>
+        </li>
+      } @empty {
+        <li class="vacio">
+          Marca canciones en la lista de la izquierda para empezar.
+        </li>
+      }
+    </ol>
+
+    <div class="opciones">
+      <span class="epigrafe">Opciones del PDF</span>
+
+      <label class="opcion">
+        <input
+          type="checkbox"
+          [checked]="portada()"
+          (change)="portada.set(!portada())"
+        />
+        Incluir portada con el título
+      </label>
+
+      <label class="opcion">
+        <input
+          type="checkbox"
+          [checked]="indice()"
+          (change)="indice.set(!indice())"
+        />
+        Incluir índice con páginas
+      </label>
+
+      <label class="opcion">
+        <input
+          type="checkbox"
+          [checked]="numeracion()"
+          (change)="numeracion.set(!numeracion())"
+        />
+        Numerar las páginas
+      </label>
+
+      <div class="opcion opcion--notacion">
+        <span>Notación</span>
+        <div class="conmutador">
+          <button
+            type="button"
+            class="conmutador__opcion"
+            data-prueba="notacion-latina"
+            [class.conmutador__opcion--activa]="notacion() === 'latina'"
+            [attr.aria-pressed]="notacion() === 'latina'"
+            (click)="notacion.set('latina')"
+          >
+            DO RE MI
+          </button>
+          <button
+            type="button"
+            class="conmutador__opcion"
+            data-prueba="notacion-americana"
+            [class.conmutador__opcion--activa]="notacion() === 'americana'"
+            [attr.aria-pressed]="notacion() === 'americana'"
+            (click)="notacion.set('americana')"
+          >
+            C D E
+          </button>
+        </div>
+      </div>
+
+      <p class="nota">Cada canción ocupa su propia página, para que en el
+        móvil ninguna quede partida.</p>
+    </div>
+
+    <footer class="pie">
+      <button
+        type="button"
+        class="boton boton--principal boton--ancho"
+        data-prueba="generar"
+        [disabled]="!listoParaGenerar() || generando()"
+        (click)="generar()"
+      >
+        <lucide-angular [img]="iconoPdf" [size]="15" />
+        {{ generando() ? "Generando…" : "Generar cancionero PDF" }}
+      </button>
+
+      <p class="pie__resumen" data-prueba="resumen">{{ resumen() }}</p>
+    </footer>
+  </section>
+</div>

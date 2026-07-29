@@ -18,11 +18,14 @@
     <span>Biblioteca</span>
   </a>
 
-  <span class="nav__enlace nav__enlace--inactivo" aria-disabled="true">
+  <a
+    class="nav__enlace"
+    routerLink="/cancioneros"
+    routerLinkActive="nav__enlace--activo"
+  >
     <lucide-angular [img]="iconoCancioneros" [size]="18" />
     <span>Cancioneros</span>
-    <span class="nav__pendiente">pronto</span>
-  </span>
+  </a>
 
   <a
     class="nav__enlace"

@@ -23,26 +23,26 @@
       </a>
     }
 
-    <button
-      type="button"
-      class="boton"
-      disabled
-      title="Llegará con el generador de cancioneros"
-    >
-      <lucide-angular [img]="iconoCancionero" [size]="15" />
-      Añadir a cancionero
-      <span class="pronto">pronto</span>
-    </button>
+    @if (cancion(); as cancion) {
+      <a
+        class="boton"
+        [routerLink]="['/cancioneros']"
+        [queryParams]="{ anadir: cancion.id }"
+      >
+        <lucide-angular [img]="iconoCancionero" [size]="15" />
+        Añadir a cancionero
+      </a>
+    }
 
     <button
       type="button"
       class="boton boton--principal"
-      disabled
-      title="Llegará con el generador de cancioneros"
+      data-prueba="descargar-pdf"
+      [disabled]="cancion() === null || descargando()"
+      (click)="descargarPdf()"
     >
       <lucide-angular [img]="iconoPdf" [size]="15" />
-      Descargar PDF
-      <span class="pronto">pronto</span>
+      {{ descargando() ? "Generando…" : "Descargar PDF" }}
     </button>
   </div>
 </header>
