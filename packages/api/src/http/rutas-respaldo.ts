@@ -1,28 +1,61 @@
 import { Router } from "express";
 import type { BaseDeDatos } from "../db/conexion.js";
 import { nombresDeEtiquetaInexistentes } from "../etiquetas/repositorio.js";
+import { leerEstadoRespaldo, registrarCopia } from "../respaldo/estado.js";
+import { crearInstantaneaTemporal } from "../respaldo/instantanea.js";
 import {
   exportarBiblioteca,
   importarRespaldo,
 } from "../respaldo/repositorio.js";
 import { validarRespaldo } from "./validacion.js";
 
-function nombreDeFichero(): string {
+function nombreDeFichero(extension: string): string {
   const hoy = new Date().toISOString().slice(0, 10);
 
-  return `cancionero-${hoy}.json`;
+  return `cancionero-${hoy}.${extension}`;
 }
 
 export function crearRutasRespaldo(bd: BaseDeDatos): Router {
   const rutas = Router();
 
   rutas.get("/", (_peticion, respuesta) => {
+    const biblioteca = exportarBiblioteca(bd);
+
+    registrarCopia(bd);
+
     respuesta
       .setHeader(
         "Content-Disposition",
-        `attachment; filename="${nombreDeFichero()}"`,
+        `attachment; filename="${nombreDeFichero("json")}"`,
       )
-      .json(exportarBiblioteca(bd));
+      .json(biblioteca);
+  });
+
+  rutas.get("/estado", (_peticion, respuesta) => {
+    respuesta.json(leerEstadoRespaldo(bd));
+  });
+
+  rutas.get("/base-de-datos", (_peticion, respuesta) => {
+    const instantanea = crearInstantaneaTemporal(bd);
+
+    respuesta.setHeader("Content-Type", "application/vnd.sqlite3");
+
+    respuesta.download(instantanea.ruta, nombreDeFichero("db"), (fallo) => {
+      instantanea.limpiar();
+
+      if (fallo === undefined) {
+        registrarCopia(bd);
+        return;
+      }
+
+      console.error(fallo);
+
+      if (!respuesta.headersSent) {
+        respuesta
+          .status(500)
+          .json({ error: "No se ha podido preparar la copia." });
+      }
+    });
   });
 
   rutas.post("/", (peticion, respuesta) => {
