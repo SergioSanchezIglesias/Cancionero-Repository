@@ -1,10 +1,11 @@
 :host {
   display: block;
-  --letra: var(--letra-visor);
-  --acorde: var(--acorde-visor);
+  --letra: calc(var(--letra-visor) * var(--escala-lectura));
+  --acorde: calc(var(--acorde-visor) * var(--escala-lectura));
   font-family: var(--font-ui);
 }
 
+/* La vista previa del editor tiene su tamaño fijo: ahí no hay A− ni A+. */
 :host(.es-previa) {
   --letra: var(--letra-previa);
   --acorde: var(--acorde-previa);

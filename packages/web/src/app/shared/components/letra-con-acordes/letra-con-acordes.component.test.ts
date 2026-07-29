@@ -1,14 +1,19 @@
 import { provideZonelessChangeDetection } from "@angular/core";
 import { TestBed, type ComponentFixture } from "@angular/core/testing";
+import type { OpcionesDeLectura } from "@cancionero/chords";
 import { beforeEach, describe, expect, it } from "vitest";
 import { LetraConAcordesComponent } from "./letra-con-acordes.component";
 
 describe("LetraConAcordesComponent", () => {
   let fixture: ComponentFixture<LetraConAcordesComponent>;
 
-  async function pintar(contenido: string): Promise<HTMLElement> {
+  async function pintar(
+    contenido: string,
+    lectura: OpcionesDeLectura | null = null,
+  ): Promise<HTMLElement> {
     fixture = TestBed.createComponent(LetraConAcordesComponent);
     fixture.componentRef.setInput("contenido", contenido);
+    fixture.componentRef.setInput("lectura", lectura);
     await fixture.whenStable();
 
     return fixture.nativeElement as HTMLElement;
@@ -96,5 +101,29 @@ describe("LetraConAcordesComponent", () => {
     const elemento = await pintar("[N.C.]Sin acompañamiento");
 
     expect(textos(elemento, ".segmento__acorde")).toEqual(["N.C."]);
+  });
+
+  it("pinta los acordes transpuestos cuando se le pasan opciones de lectura", async () => {
+    const elemento = await pintar("[SOL]VEN A CELE[SIm]BRAR", {
+      tonoOriginal: "SOL",
+      semitonos: 2,
+      notacion: "latina",
+    });
+
+    expect(textos(elemento, ".segmento__acorde")).toEqual(["LA", "DO#m"]);
+    expect(textos(elemento, ".segmento__letra")).toEqual([
+      "VEN A CELE",
+      "BRAR",
+    ]);
+  });
+
+  it("pinta los acordes en notación americana si así se pide", async () => {
+    const elemento = await pintar("[SOL]VEN A CELE[SIm]BRAR", {
+      tonoOriginal: "SOL",
+      semitonos: 0,
+      notacion: "americana",
+    });
+
+    expect(textos(elemento, ".segmento__acorde")).toEqual(["G", "Bm"]);
   });
 });

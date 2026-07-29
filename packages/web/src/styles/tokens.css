@@ -38,6 +38,13 @@
   --letra-previa: 15.5px;
   --acorde-previa: 13px;
 
+  /*
+   * Cuánto agranda el visor la letra con A− / A+. Se multiplica en el propio
+   * componente que pinta la canción: si el `calc` viviera aquí, quedaría
+   * resuelto contra este 1 y redefinirlo más abajo no serviría de nada.
+   */
+  --escala-lectura: 1;
+
   /* Separación mínima entre dos acordes seguidos — PRD §15.4 */
   --acorde-separacion: 11px;
 

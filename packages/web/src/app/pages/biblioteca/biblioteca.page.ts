@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
 import { toObservable, toSignal } from "@angular/core/rxjs-interop";
 import { RouterLink } from "@angular/router";
-import { LucideAngularModule, Plus, Search } from "lucide-angular";
+import { LucideAngularModule, Pencil, Plus, Search } from "lucide-angular";
 import { catchError, map, of, switchMap } from "rxjs";
 import type { CancionResumen } from "../../core/interfaces/cancion.interface";
 import {
@@ -33,6 +33,7 @@ export class BibliotecaPage {
 
   protected readonly iconoNueva = Plus;
   protected readonly iconoBuscar = Search;
+  protected readonly iconoEditar = Pencil;
 
   private readonly etiquetas = toSignal(
     this.etiquetasService.listar().pipe(catchError(() => of<Etiqueta[]>([]))),

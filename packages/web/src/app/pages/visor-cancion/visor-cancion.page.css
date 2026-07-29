@@ -1,0 +1,327 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Barra superior */
+
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 28px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.barra__lado {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.miga {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 3px;
+  font-size: 13px;
+}
+
+.miga__enlace,
+.miga__separador {
+  color: var(--text-3);
+}
+
+.miga__enlace:hover {
+  color: var(--text-2);
+}
+
+.miga__actual {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radio-m);
+  background: var(--bg);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.boton:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--bg-warm);
+}
+
+.boton:disabled {
+  color: var(--text-3);
+  cursor: default;
+}
+
+.boton--icono {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  justify-content: center;
+  color: var(--text-2);
+}
+
+.boton--principal {
+  border-color: transparent;
+  background: var(--primary);
+  padding: 10px 16px;
+  font-weight: 600;
+  color: var(--bg);
+}
+
+.boton--principal:disabled {
+  background: var(--primary);
+  color: var(--bg);
+  opacity: 0.45;
+}
+
+/* Marca de «esto llega en el hito del PDF», igual que en la barra lateral. */
+.pronto {
+  padding: 2px 6px;
+  border-radius: var(--radio-s);
+  background: var(--bg-warm-2);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-3);
+}
+
+.boton--principal .pronto {
+  background: var(--primary-dark);
+  color: var(--bg);
+}
+
+/* Barra de herramientas: transpositor, notación y tamaño */
+
+.herramientas {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 13px 28px;
+  background: var(--bg-warm);
+  border-bottom: 1px solid var(--border);
+}
+
+.herramientas__rotulo {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.herramientas__relleno {
+  flex: 1 1 auto;
+}
+
+.pasos {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.paso {
+  width: 38px;
+  height: 34px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radio-m);
+  background: var(--bg);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.paso:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.paso:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* El tono al que suena ahora: es el estado activo, de ahí el rojo. */
+.tono {
+  padding: 7px 20px;
+  border-radius: var(--radio-m);
+  background: var(--primary);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--bg);
+}
+
+.original {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: var(--radio-m);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.original:hover:not(:disabled) {
+  background: var(--bg-warm-2);
+}
+
+.original:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.divisor {
+  width: 1px;
+  height: 26px;
+  background: var(--border-strong);
+}
+
+.conmutador {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radio-l);
+  background: var(--bg);
+}
+
+.conmutador__opcion {
+  padding: 7px 14px;
+  border: none;
+  border-radius: var(--radio-s);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.conmutador__opcion:hover {
+  color: var(--primary);
+}
+
+.conmutador__opcion--activa,
+.conmutador__opcion--activa:hover {
+  background: var(--primary);
+  color: var(--bg);
+}
+
+.estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border-radius: var(--radio-pildora);
+  background: var(--ochre-soft);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ochre);
+}
+
+/* Transponer no toca lo guardado: se avisa con el color de acción, no de dato. */
+.estado--transpuesta {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+/* Zona de lectura */
+
+.zona {
+  display: flex;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 38px 28px;
+  background: var(--bg);
+}
+
+.cancion {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  width: 820px;
+  max-width: 100%;
+  height: fit-content;
+}
+
+.cancion__cabecera {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cancion__titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 33px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--primary);
+}
+
+.cancion__acento {
+  width: 52px;
+  height: 3px;
+  border-radius: var(--radio-s);
+  background: var(--primary);
+}
+
+.cancion__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dato {
+  padding: 6px 11px;
+  border-radius: var(--radio-s);
+  background: var(--bg-warm-2);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.cancion__meta .divisor {
+  height: 18px;
+}
+
+.etiqueta {
+  padding: 6px 11px;
+  border-radius: var(--radio-s);
+  background: var(--ochre-soft);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ochre);
+}
+
+.aviso {
+  margin: 0;
+  padding: 28px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.aviso--error {
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+}

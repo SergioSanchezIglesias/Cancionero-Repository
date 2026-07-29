@@ -1,0 +1,223 @@
+<header class="barra">
+  <div class="barra__lado">
+    <a
+      class="boton boton--icono"
+      routerLink="/biblioteca"
+      aria-label="Volver a la biblioteca"
+    >
+      <lucide-angular [img]="iconoVolver" [size]="17" />
+    </a>
+
+    <nav class="miga" aria-label="Dónde estás">
+      <a class="miga__enlace" routerLink="/biblioteca">Biblioteca</a>
+      <span class="miga__separador" aria-hidden="true">/</span>
+      <span class="miga__actual">{{ cancion()?.titulo ?? "Canción" }}</span>
+    </nav>
+  </div>
+
+  <div class="barra__lado">
+    @if (cancion(); as cancion) {
+      <a class="boton" [routerLink]="['/canciones', cancion.id, 'editar']">
+        <lucide-angular [img]="iconoEditar" [size]="15" />
+        Editar
+      </a>
+    }
+
+    <button
+      type="button"
+      class="boton"
+      disabled
+      title="Llegará con el generador de cancioneros"
+    >
+      <lucide-angular [img]="iconoCancionero" [size]="15" />
+      Añadir a cancionero
+      <span class="pronto">pronto</span>
+    </button>
+
+    <button
+      type="button"
+      class="boton boton--principal"
+      disabled
+      title="Llegará con el generador de cancioneros"
+    >
+      <lucide-angular [img]="iconoPdf" [size]="15" />
+      Descargar PDF
+      <span class="pronto">pronto</span>
+    </button>
+  </div>
+</header>
+
+@if (cancion(); as cancion) {
+  <div class="herramientas">
+    <span class="herramientas__rotulo" id="rotulo-transponer">Transponer</span>
+
+    <div class="pasos" role="group" aria-labelledby="rotulo-transponer">
+      <button
+        type="button"
+        class="paso"
+        title="Bajar un tono"
+        aria-label="Bajar un tono"
+        data-prueba="bajar-tono"
+        [disabled]="!puedeTransponer(-2)"
+        (click)="transponer(-2)"
+      >
+        −1
+      </button>
+
+      <button
+        type="button"
+        class="paso"
+        title="Bajar medio tono"
+        aria-label="Bajar medio tono"
+        data-prueba="bajar-semitono"
+        [disabled]="!puedeTransponer(-1)"
+        (click)="transponer(-1)"
+      >
+        −½
+      </button>
+
+      <span class="tono" data-prueba="tono-actual">{{ tonoActual() }}</span>
+
+      <button
+        type="button"
+        class="paso"
+        title="Subir medio tono"
+        aria-label="Subir medio tono"
+        data-prueba="subir-semitono"
+        [disabled]="!puedeTransponer(1)"
+        (click)="transponer(1)"
+      >
+        +½
+      </button>
+
+      <button
+        type="button"
+        class="paso"
+        title="Subir un tono"
+        aria-label="Subir un tono"
+        data-prueba="subir-tono"
+        [disabled]="!puedeTransponer(2)"
+        (click)="transponer(2)"
+      >
+        +1
+      </button>
+
+      <button
+        type="button"
+        class="original"
+        data-prueba="volver-al-original"
+        [disabled]="!estaTranspuesta()"
+        (click)="volverAlOriginal()"
+      >
+        <lucide-angular [img]="iconoOriginal" [size]="14" />
+        Original ({{ tonoOriginal() }})
+      </button>
+    </div>
+
+    <span class="divisor" aria-hidden="true"></span>
+
+    <span class="herramientas__rotulo" id="rotulo-notacion">Notación</span>
+
+    <div class="conmutador" role="group" aria-labelledby="rotulo-notacion">
+      <button
+        type="button"
+        class="conmutador__opcion"
+        data-prueba="notacion-latina"
+        [class.conmutador__opcion--activa]="notacion() === 'latina'"
+        [attr.aria-pressed]="notacion() === 'latina'"
+        (click)="usarNotacion('latina')"
+      >
+        DO RE MI
+      </button>
+
+      <button
+        type="button"
+        class="conmutador__opcion"
+        data-prueba="notacion-americana"
+        [class.conmutador__opcion--activa]="notacion() === 'americana'"
+        [attr.aria-pressed]="notacion() === 'americana'"
+        (click)="usarNotacion('americana')"
+      >
+        C D E
+      </button>
+    </div>
+
+    <span class="divisor" aria-hidden="true"></span>
+
+    <span class="herramientas__rotulo" id="rotulo-tamano">Tamaño</span>
+
+    <div class="pasos" role="group" aria-labelledby="rotulo-tamano">
+      <button
+        type="button"
+        class="paso"
+        title="Letra más pequeña"
+        aria-label="Letra más pequeña"
+        data-prueba="reducir-letra"
+        [disabled]="!puedeReducir()"
+        (click)="reducir()"
+      >
+        A−
+      </button>
+
+      <button
+        type="button"
+        class="paso"
+        title="Letra más grande"
+        aria-label="Letra más grande"
+        data-prueba="agrandar-letra"
+        [disabled]="!puedeAgrandar()"
+        (click)="agrandar()"
+      >
+        A+
+      </button>
+    </div>
+
+    <span class="herramientas__relleno"></span>
+
+    <span
+      class="estado"
+      [class.estado--transpuesta]="estaTranspuesta()"
+      [title]="explicacionDelEstado()"
+      data-prueba="estado-tono"
+    >
+      <lucide-angular [img]="iconoTono" [size]="14" />
+      {{ estaTranspuesta() ? "Transpuesta" : "Tono original" }}
+    </span>
+  </div>
+
+  <div class="zona">
+    <article class="cancion">
+      <header class="cancion__cabecera">
+        <h1 class="cancion__titulo">{{ cancion.titulo }}</h1>
+        <span class="cancion__acento" aria-hidden="true"></span>
+
+        <div class="cancion__meta">
+          <span class="dato">Tono original: {{ tonoOriginal() }}</span>
+
+          @if (cancion.cantoralOrigen; as cantoral) {
+            <span class="dato">Cantoral: {{ cantoral }}</span>
+          }
+
+          <span class="dato">Editada: {{ editada() }}</span>
+
+          @if (nombresDeEtiquetas().length > 0) {
+            <span class="divisor" aria-hidden="true"></span>
+
+            @for (nombre of nombresDeEtiquetas(); track nombre) {
+              <span class="etiqueta">{{ nombre }}</span>
+            }
+          }
+        </div>
+      </header>
+
+      <app-letra-con-acordes
+        [contenido]="cancion.contenido"
+        [lectura]="lectura()"
+      />
+    </article>
+  </div>
+} @else {
+  <p class="aviso" [class.aviso--error]="error() !== null">
+    {{ error() ?? "Cargando la canción…" }}
+  </p>
+}

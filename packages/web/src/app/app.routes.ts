@@ -19,6 +19,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: "canciones/:id",
+    title: "Canción · Cancionero",
+    loadComponent: () =>
+      import("./pages/visor-cancion/visor-cancion.page").then(
+        (modulo) => modulo.VisorCancionPage,
+      ),
+  },
+  {
     path: "canciones/:id/editar",
     title: "Editar canción · Cancionero",
     loadComponent: () =>

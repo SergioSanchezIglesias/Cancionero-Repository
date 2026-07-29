@@ -222,20 +222,46 @@
   overflow: hidden;
 }
 
-.lista > li + li .fila {
+.lista > li + li {
   border-top: 1px solid var(--border);
 }
 
 .fila {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 14px 18px;
+  gap: 6px;
+  padding-right: 18px;
   background: var(--bg);
 }
 
 .fila:hover {
   background: var(--bg-warm);
+}
+
+.fila__enlace {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 14px 18px;
+}
+
+.fila__accion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: var(--radio-m);
+  background: var(--bg);
+  color: var(--text-2);
+}
+
+.fila__accion:hover {
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 .fila__tono {
