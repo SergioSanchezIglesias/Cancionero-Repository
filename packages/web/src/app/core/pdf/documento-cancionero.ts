@@ -135,23 +135,23 @@ function pintarLinea(linea: Linea, escala: number): ContentColumns {
   return { columns: columnas, columnGap: 0 };
 }
 
+/** Ancla a la que apunta el índice para poder saltar a la canción. */
+function anclaDe(cancion: Cancion): string {
+  return `cancion-${cancion.id}`;
+}
+
 function pintarCancion(maquetada: CancionMaquetada, saltar: boolean): Content[] {
   const { cancion, lineas, escala } = maquetada;
 
   const cabecera: Content[] = [
     {
       text: cancion.titulo,
+      id: anclaDe(cancion),
       font: FUENTE_TITULOS,
       fontSize: 19,
       color: COLOR.primary,
+      margin: [0, 0, 0, 16],
       ...(saltar ? { pageBreak: "before" as const } : {}),
-    },
-    {
-      text: `Tono: ${maquetada.tono}`,
-      font: FUENTE_TEXTO,
-      fontSize: 9,
-      color: COLOR.text2,
-      margin: [0, 3, 0, 16],
     },
   ];
 
@@ -197,38 +197,53 @@ function pintarIndice(maquetadas: readonly CancionMaquetada[]): Content[] {
     },
     {
       table: {
-        widths: [18, "*", 42, 26],
-        body: maquetadas.map((maquetada, posicion) => [
-          {
-            text: String(posicion + 1),
-            font: FUENTE_TEXTO,
-            fontSize: 11,
-            color: COLOR.text3,
-          },
-          {
-            text: maquetada.cancion.titulo,
-            font: FUENTE_TEXTO,
-            fontSize: 11,
-            color: COLOR.text,
-          },
-          {
-            text: maquetada.tono,
-            font: FUENTE_TEXTO,
-            fontSize: 9,
-            color: COLOR.text2,
-            alignment: "right",
-          },
-          {
-            // El número sale de la maqueta, no de un contador del documento:
-            // sabemos de antemano cuántas páginas ocupa cada canción.
-            text: String(maquetada.pagina),
-            font: FUENTE_TEXTO,
-            fontSize: 11,
-            bold: true,
-            color: COLOR.primary,
-            alignment: "right",
-          },
-        ]),
+        /*
+         * La última columna es ancha a propósito: pdfmake reserva el sitio del
+         * número de página con el texto «00000», y si no cabe entero parte en
+         * dos líneas y deja los ceros sobrantes a la vista.
+         */
+        widths: [18, "*", 42, 40],
+        body: maquetadas.map((maquetada, posicion) => {
+          // La fila entera lleva al sitio: en el móvil se agradece un blanco
+          // grande al que apuntar con el dedo.
+          const salta = { linkToDestination: anclaDe(maquetada.cancion) };
+
+          return [
+            {
+              ...salta,
+              text: String(posicion + 1),
+              font: FUENTE_TEXTO,
+              fontSize: 11,
+              color: COLOR.text3,
+            },
+            {
+              ...salta,
+              text: maquetada.cancion.titulo,
+              font: FUENTE_TEXTO,
+              fontSize: 11,
+              color: COLOR.text,
+            },
+            {
+              ...salta,
+              text: maquetada.tono,
+              font: FUENTE_TEXTO,
+              fontSize: 9,
+              color: COLOR.text2,
+              alignment: "right",
+            },
+            {
+              ...salta,
+              // El número lo resuelve pdfmake mirando dónde acabó la canción,
+              // en vez de fiarse de lo que estimó la maqueta.
+              pageReference: anclaDe(maquetada.cancion),
+              font: FUENTE_TEXTO,
+              fontSize: 11,
+              bold: true,
+              color: COLOR.primary,
+              alignment: "right",
+            },
+          ];
+        }),
       },
       layout: {
         hLineWidth: (i: number, node: { table: { body: unknown[] } }) =>

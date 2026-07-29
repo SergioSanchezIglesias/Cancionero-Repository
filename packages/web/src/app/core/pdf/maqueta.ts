@@ -27,8 +27,8 @@ const INTERLINEADO = 1.35;
 /** Hueco a la derecha del acorde para que dos seguidos nunca se toquen. */
 export const SEPARACION_ACORDE = 8;
 
-/** Alto de la cabecera de cada canción: título, tono y su respiro. */
-const ALTO_CABECERA = 62;
+/** Alto de la cabecera de cada canción: el título y su respiro debajo. */
+const ALTO_CABECERA = 44;
 
 /** Alto de la línea en blanco que separa estrofas. */
 const ALTO_LINEA_VACIA = LETRA * 0.7;

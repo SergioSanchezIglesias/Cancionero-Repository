@@ -110,50 +110,55 @@ describe("construirDocumento · estructura", () => {
 });
 
 describe("construirDocumento · índice", () => {
-  function filasDelIndice(
-    opcionesDadas = opciones(),
-  ): { texto: string; pagina: string }[] {
+  interface Celda {
+    readonly text?: string;
+    readonly pageReference?: string;
+    readonly linkToDestination?: string;
+  }
+
+  function filasDelIndice(opcionesDadas = opciones()): Celda[][] {
     const tabla = contenidoDe(opcionesDadas).find(
       (nodo): nodo is ContentTable =>
         typeof nodo === "object" && nodo !== null && "table" in nodo,
     );
 
-    return (tabla?.table.body ?? []).map((fila) => {
-      const celdas = fila as { text: string }[];
-
-      return { texto: celdas[1]?.text ?? "", pagina: celdas[3]?.text ?? "" };
-    });
+    return (tabla?.table.body ?? []).map((fila) => fila as Celda[]);
   }
 
   it("lista las canciones en el orden elegido", () => {
-    expect(filasDelIndice().map((fila) => fila.texto)).toEqual([
+    expect(filasDelIndice().map((fila) => fila.at(1)?.text)).toEqual([
       "Canción 1",
       "Canción 2",
     ]);
   });
 
-  it("con portada e índice, la primera canción cae en la página 3", () => {
-    expect(filasDelIndice().map((fila) => fila.pagina)).toEqual(["3", "4"]);
+  it("la fila entera salta a su canción al pulsarla", () => {
+    const primera = filasDelIndice().at(0) ?? [];
+
+    expect(primera).toHaveLength(4);
+    expect(
+      primera.every((celda) => celda.linkToDestination === "cancion-1"),
+    ).toBe(true);
   });
 
-  it("sin portada, todo se adelanta una página", () => {
-    const filas = filasDelIndice(opciones({ portada: false }));
+  it("cada canción es el destino al que apunta su fila", () => {
+    const contenido = contenidoDe(opciones());
 
-    expect(filas.map((fila) => fila.pagina)).toEqual(["2", "3"]);
+    const anclas = contenido
+      .filter(
+        (nodo): nodo is Content & { id?: string } =>
+          typeof nodo === "object" && nodo !== null && "id" in nodo,
+      )
+      .map((nodo) => nodo.id);
+
+    expect(anclas).toEqual(["cancion-1", "cancion-2"]);
   });
 
-  it("una canción que ocupa dos páginas desplaza a la siguiente", () => {
-    const larga = cancion({
-      id: 1,
-      contenido: Array.from({ length: 400 }, () => "linea larga").join("\n"),
-    });
-
-    const filas = filasDelIndice(
-      opciones({ canciones: [larga, cancion({ id: 2 })] }),
-    );
-
-    expect(filas[0]?.pagina).toBe("3");
-    expect(Number(filas[1]?.pagina)).toBeGreaterThan(4);
+  it("el número de página lo resuelve el PDF, no la estimación", () => {
+    expect(filasDelIndice().map((fila) => fila.at(3)?.pageReference)).toEqual([
+      "cancion-1",
+      "cancion-2",
+    ]);
   });
 });
 
@@ -218,7 +223,7 @@ describe("construirDocumento · contenido de la canción", () => {
     expect(partes).not.toContain("SOL");
   });
 
-  it("imprime el tono guardado, sin transponer", () => {
+  it("la página de la canción es el título y la letra, sin más datos", () => {
     const partes = acordesYLetra(
       opciones({
         portada: false,
@@ -227,8 +232,24 @@ describe("construirDocumento · contenido de la canción", () => {
       }),
     );
 
-    expect(partes).toContain("Tono: SOL");
+    expect(partes).toContain("Canción 1");
     expect(partes).toContain("SOL");
+    expect(partes.join(" ")).not.toContain("Tono:");
+  });
+
+  it("el tono se sigue viendo en el índice", () => {
+    const contenido = contenidoDe(opciones());
+
+    const tabla = contenido.find(
+      (nodo): nodo is ContentTable =>
+        typeof nodo === "object" && nodo !== null && "table" in nodo,
+    );
+
+    const tonos = (tabla?.table.body ?? []).map(
+      (fila) => (fila as { text?: string }[]).at(2)?.text,
+    );
+
+    expect(tonos).toEqual(["SOL", "SOL"]);
   });
 
   it("el estribillo va en negrita y la estrofa no", () => {
