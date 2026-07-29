@@ -29,8 +29,10 @@ import { catchError, of } from "rxjs";
 import type { Cancion } from "../../core/interfaces/cancion.interface";
 import type { Etiqueta } from "../../core/interfaces/etiqueta.interface";
 import { CancionesService } from "../../core/services/canciones.service";
+import { CancioneroPdfService } from "../../core/services/cancionero-pdf.service";
 import { EtiquetasService } from "../../core/services/etiquetas.service";
 import { resumirAntiguedad } from "../../core/utils/antiguedad";
+import { mensajeDeExportacion } from "../../core/pdf/error-exportacion";
 import { mensajeDeError } from "../../core/utils/mensaje-error";
 import { LetraConAcordesComponent } from "../../shared/components/letra-con-acordes/letra-con-acordes.component";
 
@@ -59,6 +61,7 @@ const NIVEL_POR_DEFECTO = 2;
 export class VisorCancionPage {
   private readonly cancionesService = inject(CancionesService);
   private readonly etiquetasService = inject(EtiquetasService);
+  private readonly pdf = inject(CancioneroPdfService);
   private readonly destruccion = inject(DestroyRef);
 
   /** Llega de la ruta `/canciones/:id`. */
@@ -74,6 +77,7 @@ export class VisorCancionPage {
   protected readonly cancion = signal<Cancion | null>(null);
   protected readonly error = signal<string | null>(null);
   protected readonly cargando = signal(true);
+  protected readonly descargando = signal(false);
 
   /**
    * Transposición y notación son estado de *lectura*: viven aquí y no se
@@ -219,6 +223,36 @@ export class VisorCancionPage {
 
   protected agrandar(): void {
     if (this.puedeAgrandar()) this.nivelDeTamano.update((nivel) => nivel + 1);
+  }
+
+  /**
+   * Descarga esta canción sola, tal como se está viendo: si está transpuesta,
+   * el PDF sale transpuesto. Es lo que espera quien pulsa el botón mirando la
+   * pantalla; lo guardado sigue intacto.
+   */
+  protected async descargarPdf(): Promise<void> {
+    const cancion = this.cancion();
+
+    if (cancion === null || this.descargando()) return;
+
+    this.descargando.set(true);
+    this.error.set(null);
+
+    try {
+      await this.pdf.descargar({
+        titulo: cancion.titulo,
+        canciones: [cancion],
+        notacion: this.notacion(),
+        semitonos: this.semitonos(),
+        portada: false,
+        indice: false,
+        numeracion: false,
+      });
+    } catch (fallo: unknown) {
+      this.error.set(mensajeDeExportacion(fallo));
+    } finally {
+      this.descargando.set(false);
+    }
   }
 
   protected reducir(): void {

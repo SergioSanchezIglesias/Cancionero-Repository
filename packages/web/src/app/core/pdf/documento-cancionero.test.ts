@@ -170,9 +170,37 @@ describe("construirDocumento · contenido de la canción", () => {
     );
 
     expect(partes).toContain("SOL");
-    expect(partes).toContain("VEN A CELE");
+    expect(partes).toContain("VEN\u00A0A\u00A0CELE");
     expect(partes).toContain("SIm");
     expect(partes).toContain("BRAR");
+  });
+
+  it("los espacios del fragmento son duros, para que no se parta una sílaba", () => {
+    const partes = acordesYLetra(
+      opciones({
+        portada: false,
+        indice: false,
+        canciones: [
+          cancion({ id: 1, contenido: "[DO]EMPAPANDO [SOL]NUESTRAS VIDAS" }),
+        ],
+      }),
+    );
+
+    expect(partes).toContain("EMPAPANDO\u00A0");
+    expect(partes).toContain("NUESTRAS\u00A0VIDAS");
+    expect(partes.join(" ")).not.toContain("EMPAPANDO ");
+  });
+
+  it("un acorde con espacios tampoco se parte", () => {
+    const partes = acordesYLetra(
+      opciones({
+        portada: false,
+        indice: false,
+        canciones: [cancion({ id: 1, contenido: "[FA SOL DO]ALELUYA" })],
+      }),
+    );
+
+    expect(partes).toContain("FA\u00A0SOL\u00A0DO");
   });
 
   it("traduce a notación americana si así se pide", () => {

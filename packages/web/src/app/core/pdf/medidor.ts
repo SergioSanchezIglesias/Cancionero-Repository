@@ -1,3 +1,5 @@
+import { InjectionToken } from "@angular/core";
+
 /**
  * Mide el ancho de un texto en puntos, con la tipografía del cancionero.
  *
@@ -16,6 +18,16 @@ export interface Medidor {
 
 /** Fuente y estilo con los que se pinta la letra de las canciones. */
 const FAMILIA = "Inter";
+
+/**
+ * El medidor se inyecta en vez de crearse a mano: así el navegador pone el
+ * canvas y una prueba puede poner una regla de mentira. Es `null` allí donde
+ * no hay canvas, y quien lo use tiene que contar con ello.
+ */
+export const MEDIDOR = new InjectionToken<Medidor | null>("medidor de texto", {
+  providedIn: "root",
+  factory: () => crearMedidorDeCanvas(),
+});
 
 /**
  * Medidor real, apoyado en el canvas del navegador. Usa las mismas fuentes

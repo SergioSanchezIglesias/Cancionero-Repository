@@ -70,7 +70,7 @@ describe("SidebarComponent", () => {
     peticiones.verify();
   });
 
-  it("Ajustes ya es un enlace navegable, no una sección pendiente", async () => {
+  it("todas las secciones son ya enlaces navegables", async () => {
     await pintar();
 
     const enlaces = [...elemento().querySelectorAll("a")].map((enlace) =>
@@ -81,8 +81,10 @@ describe("SidebarComponent", () => {
       ...elemento().querySelectorAll(".nav__enlace--inactivo"),
     ].map((seccion) => seccion.textContent ?? "");
 
+    expect(enlaces).toContain("/biblioteca");
+    expect(enlaces).toContain("/cancioneros");
     expect(enlaces).toContain("/ajustes");
-    expect(pendientes.join(" ")).not.toContain("Ajustes");
+    expect(pendientes).toHaveLength(0);
   });
 
   it("con la copia al día enseña cuándo se hizo", async () => {

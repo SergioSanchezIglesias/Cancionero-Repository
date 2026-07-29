@@ -1,5 +1,7 @@
 import {
+  cambiarNotacion,
   prepararContenido,
+  tonoDeLectura,
   type Linea,
   type Notacion,
 } from "@cancionero/chords";
@@ -40,11 +42,19 @@ export interface OpcionesDelCancionero {
   readonly portada: boolean;
   readonly indice: boolean;
   readonly numeracion: boolean;
+  /**
+   * Semitonos que se aplican al exportar. El cancionero del coro va siempre a
+   * `0`, en el tono guardado; lo usa la descarga de una canción suelta desde
+   * el visor, que imprime lo que el editor está viendo.
+   */
+  readonly semitonos?: number;
 }
 
 interface CancionMaquetada {
   readonly cancion: Cancion;
   readonly lineas: readonly Linea[];
+  /** Tono en el que se imprime, ya con la notación y los semitonos pedidos. */
+  readonly tono: string;
   readonly escala: number;
   readonly pagina: number;
 }
@@ -55,6 +65,18 @@ interface CancionMaquetada {
  */
 const ESPACIO_DURO = "\u00A0";
 
+/**
+ * Cada segmento es indivisible: va debajo de su acorde y no puede partirse.
+ *
+ * Con espacios normales, pdfmake mide el que va al final del fragmento como si
+ * no ocupara nada pero después lo pinta, así que la columna siguiente se queda
+ * corta y se le escapa la última letra a la línea de abajo. Con espacio duro
+ * mide lo mismo que dibuja, y además no encuentra por dónde partir.
+ */
+function sinCortes(texto: string): string {
+  return texto.replace(/ /g, ESPACIO_DURO);
+}
+
 function maquetar(
   opciones: OpcionesDelCancionero,
   medidor: Medidor,
@@ -63,16 +85,17 @@ function maquetar(
   let pagina = 1 + (opciones.portada ? 1 : 0) + (opciones.indice ? 1 : 0);
 
   return opciones.canciones.map((cancion) => {
-    const lineas = prepararContenido(cancion.contenido, {
+    const lectura = {
       tonoOriginal: cancion.tonoOriginal,
-      // El cancionero se imprime en el tono en el que está guardada: la
-      // transposición del visor es solo para tocar (PRD §6.3).
-      semitonos: 0,
+      semitonos: opciones.semitonos ?? 0,
       notacion: opciones.notacion,
-    });
+    };
+
+    const lineas = prepararContenido(cancion.contenido, lectura);
+    const tono = cambiarNotacion(tonoDeLectura(lectura), opciones.notacion);
 
     const escala = escalaQueCabe(lineas, medidor);
-    const maquetada = { cancion, lineas, escala, pagina };
+    const maquetada = { cancion, lineas, tono, escala, pagina };
 
     pagina += paginasQueOcupa(lineas, escala);
 
@@ -87,7 +110,7 @@ function pintarLinea(linea: Linea, escala: number): ContentColumns {
       {
         text: segmento.acorde === null || segmento.acorde === ""
           ? ESPACIO_DURO
-          : segmento.acorde,
+          : sinCortes(segmento.acorde),
         font: FUENTE_TEXTO,
         bold: true,
         color: COLOR.primary,
@@ -96,11 +119,13 @@ function pintarLinea(linea: Linea, escala: number): ContentColumns {
         margin: [0, 0, SEPARACION_ACORDE * escala, 0],
       },
       {
-        text: segmento.texto === "" ? ESPACIO_DURO : segmento.texto,
+        text: segmento.texto === "" ? ESPACIO_DURO : sinCortes(segmento.texto),
         font: FUENTE_TEXTO,
         bold: linea.negrita,
         color: COLOR.text,
         fontSize: LETRA * escala,
+        // Aunque sean duros, pdfmake recorta los espacios de los extremos si
+        // no se le dice lo contrario, y las palabras acabarían pegadas.
         preserveLeadingSpaces: true,
         preserveTrailingSpaces: true,
       },
@@ -122,7 +147,7 @@ function pintarCancion(maquetada: CancionMaquetada, saltar: boolean): Content[] 
       ...(saltar ? { pageBreak: "before" as const } : {}),
     },
     {
-      text: `Tono: ${cancion.tonoOriginal}`,
+      text: `Tono: ${maquetada.tono}`,
       font: FUENTE_TEXTO,
       fontSize: 9,
       color: COLOR.text2,
@@ -187,7 +212,7 @@ function pintarIndice(maquetadas: readonly CancionMaquetada[]): Content[] {
             color: COLOR.text,
           },
           {
-            text: maquetada.cancion.tonoOriginal,
+            text: maquetada.tono,
             font: FUENTE_TEXTO,
             fontSize: 9,
             color: COLOR.text2,

@@ -7,6 +7,8 @@
  * entra a leer una canción.
  */
 
+import { ErrorDeExportacion } from "./error-exportacion";
+
 /** Nombre dentro del sistema de ficheros virtual → fichero servido. */
 const FICHEROS: Readonly<Record<string, string>> = {
   "Inter-Regular.ttf": "fuentes-pdf/Inter-Regular.ttf",
@@ -64,8 +66,8 @@ export async function cargarFuentes(): Promise<SistemaDeFicheros> {
       const respuesta = await fetch(ruta);
 
       if (!respuesta.ok) {
-        throw new Error(
-          `No se ha podido cargar la fuente ${nombre} (${respuesta.status}).`,
+        throw new ErrorDeExportacion(
+          `No se ha podido cargar la fuente ${nombre}: el PDF quedaría sin su tipografía.`,
         );
       }
 

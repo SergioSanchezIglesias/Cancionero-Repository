@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import {
   construirDocumento,
   nombreDelFichero,
@@ -10,7 +10,8 @@ import {
   FAMILIAS,
   type SistemaDeFicheros,
 } from "../pdf/fuentes-pdf";
-import { crearMedidorDeCanvas } from "../pdf/medidor";
+import { ErrorDeExportacion } from "../pdf/error-exportacion";
+import { MEDIDOR } from "../pdf/medidor";
 
 /**
  * Lo poco que usamos de pdfmake. Se declara aquí porque el paquete se carga
@@ -21,11 +22,14 @@ interface PdfMake {
   setFonts(familias: typeof FAMILIAS): void;
   createPdf(definicion: ReturnType<typeof construirDocumento>): {
     download(nombre: string): void;
+    open(): void;
   };
 }
 
 @Injectable({ providedIn: "root" })
 export class CancioneroPdfService {
+  private readonly medidor = inject(MEDIDOR);
+
   private motor: PdfMake | null = null;
 
   /**
@@ -33,19 +37,32 @@ export class CancioneroPdfService {
    * Raspberry no interviene, que es la razón de haber elegido pdfmake.
    */
   async descargar(opciones: OpcionesDelCancionero): Promise<void> {
-    const medidor = crearMedidorDeCanvas();
+    const documento = await this.componer(opciones);
+
+    documento.download(nombreDelFichero(opciones.titulo));
+  }
+
+  /** Lo mismo, pero abierto en otra pestaña: sirve de vista previa. */
+  async abrir(opciones: OpcionesDelCancionero): Promise<void> {
+    const documento = await this.componer(opciones);
+
+    documento.open();
+  }
+
+  private async componer(opciones: OpcionesDelCancionero) {
+    const medidor = this.medidor;
 
     if (medidor === null) {
-      throw new Error("Este navegador no permite medir el texto del PDF.");
+      throw new ErrorDeExportacion(
+        "Este navegador no permite medir el texto del PDF.",
+      );
     }
 
     await esperarFuentesDePantalla();
 
     const motor = await this.motorListo();
 
-    motor
-      .createPdf(construirDocumento(opciones, medidor))
-      .download(nombreDelFichero(opciones.titulo));
+    return motor.createPdf(construirDocumento(opciones, medidor));
   }
 
   /** Carga pdfmake y le enchufa las fuentes. Solo la primera vez. */

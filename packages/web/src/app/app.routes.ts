@@ -35,6 +35,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: "cancioneros",
+    title: "Nuevo cancionero · Cancionero",
+    loadComponent: () =>
+      import("./pages/cancionero/cancionero.page").then(
+        (modulo) => modulo.CancioneroPage,
+      ),
+  },
+  {
     path: "ajustes",
     title: "Ajustes · Cancionero",
     loadComponent: () =>
