@@ -41,7 +41,13 @@ export function descargarFichero(contenido: Blob, nombre: string): void {
 
   enlace.href = url;
   enlace.download = nombre;
-  enlace.click();
 
-  URL.revokeObjectURL(url);
+  // El enlace tiene que estar en el documento para que algunos navegadores
+  // respeten el clic, y la URL no se libera hasta que la descarga ha arrancado:
+  // revocarla en la misma vuelta del bucle de eventos la aborta en Safari.
+  document.body.append(enlace);
+  enlace.click();
+  enlace.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url));
 }
