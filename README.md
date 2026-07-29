@@ -22,6 +22,34 @@ docker compose up -d   # levanta la app en http://localhost:3000
 La base de datos vive en el volumen `./data` (variable `DB_PATH`), nunca dentro
 de la imagen.
 
+## Fuentes del PDF
+
+El cancionero en PDF se genera en el navegador con **pdfmake**, que necesita las
+tipografías **incrustadas**: si faltan, el PDF sale con la fuente por defecto y
+pierde todo el diseño. Por eso `packages/web/public/fuentes-pdf/` contiene tres
+`.ttf` versionados (93 kB en total) y sus licencias OFL.
+
+Se generan **a mano y muy de vez en cuando** —solo si cambia la tipografía o se
+actualiza `@fontsource-variable`— porque hay que convertir: `@fontsource` sirve
+`.woff2` variables y pdfmake solo incrusta `.ttf` estáticos.
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install fonttools brotli
+.venv/bin/python packages/web/herramientas/generar-fuentes-pdf.py
+```
+
+El script fija los ejes de cada fuente variable (peso, y en Fraunces también el
+tamaño óptico), recorta el juego de caracteres al que hace falta en español y
+corrige los nombres internos. Si añade un eje nuevo sin declarar, **falla en
+vez de elegir un valor por su cuenta**.
+
+Para comprobar que un PDF salió con sus fuentes:
+
+```bash
+pdffonts cancionero.pdf   # las tres deben aparecer con «emb yes»
+```
+
 ## Copias de seguridad
 
 Las copias se hacen **a mano desde la propia aplicación**, en *Ajustes*. La barra
