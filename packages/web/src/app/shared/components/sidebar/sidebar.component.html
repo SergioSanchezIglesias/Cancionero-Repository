@@ -24,19 +24,26 @@
     <span class="nav__pendiente">pronto</span>
   </span>
 
-  <span class="nav__enlace nav__enlace--inactivo" aria-disabled="true">
+  <a
+    class="nav__enlace"
+    routerLink="/ajustes"
+    routerLinkActive="nav__enlace--activo"
+  >
     <lucide-angular [img]="iconoAjustes" [size]="18" />
     <span>Ajustes</span>
-    <span class="nav__pendiente">pronto</span>
-  </span>
+  </a>
 </nav>
 
 <div class="relleno"></div>
 
-<div class="respaldo">
+<a
+  class="respaldo"
+  [class.respaldo--pendiente]="hayCambiosSinRespaldar()"
+  routerLink="/ajustes"
+>
   <span class="respaldo__titulo">
     <lucide-angular [img]="iconoRespaldo" [size]="15" />
     Copia de seguridad
   </span>
-  <span class="respaldo__detalle">Todavía sin configurar</span>
-</div>
+  <span class="respaldo__detalle">{{ detalle() }}</span>
+</a>

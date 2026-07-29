@@ -26,5 +26,11 @@ export const routes: Routes = [
         (modulo) => modulo.EditorCancionPage,
       ),
   },
+  {
+    path: "ajustes",
+    title: "Ajustes · Cancionero",
+    loadComponent: () =>
+      import("./pages/ajustes/ajustes.page").then((modulo) => modulo.AjustesPage),
+  },
   { path: "**", redirectTo: "biblioteca" },
 ];

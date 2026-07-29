@@ -106,6 +106,16 @@ a.nav__enlace:hover {
   gap: 6px;
   padding: 14px;
   border-radius: 10px;
+  background: var(--bg-warm-2);
+}
+
+.respaldo:hover {
+  background: var(--border);
+}
+
+/* El ocre se reserva para cuando hay algo que hacer: avisar de la copia. */
+.respaldo--pendiente,
+.respaldo--pendiente:hover {
   background: var(--ochre-soft);
 }
 
@@ -115,6 +125,10 @@ a.nav__enlace:hover {
   gap: 8px;
   font-size: 12px;
   font-weight: 600;
+  color: var(--text-2);
+}
+
+.respaldo--pendiente .respaldo__titulo {
   color: var(--ochre);
 }
 
