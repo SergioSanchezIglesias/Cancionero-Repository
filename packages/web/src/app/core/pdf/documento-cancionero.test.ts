@@ -267,6 +267,33 @@ describe("construirDocumento · contenido de la canción", () => {
   });
 });
 
+describe("construirDocumento · pie de página", () => {
+  function pieDe(opcionesDadas: OpcionesDelCancionero): string | null {
+    const { footer } = construirDocumento(opcionesDadas, MEDIDOR);
+
+    if (typeof footer !== "function") return null;
+
+    const pintado = footer(3, 8, { width: 595, height: 842, orientation: "portrait" });
+
+    return JSON.stringify(pintado);
+  }
+
+  it("solo lleva el número de página", () => {
+    const pie = pieDe(opciones());
+
+    expect(pie).toContain('"text":"3"');
+  });
+
+  it("no menciona la notación usada", () => {
+    expect(pieDe(opciones())).not.toContain("Notación");
+    expect(pieDe(opciones({ notacion: "americana" }))).not.toContain("Notación");
+  });
+
+  it("sin numeración no hay pie ninguno", () => {
+    expect(pieDe(opciones({ numeracion: false }))).toBeNull();
+  });
+});
+
 describe("paginasTotales", () => {
   it("cuenta portada, índice y una página por canción", () => {
     expect(paginasTotales(opciones(), MEDIDOR)).toBe(4);

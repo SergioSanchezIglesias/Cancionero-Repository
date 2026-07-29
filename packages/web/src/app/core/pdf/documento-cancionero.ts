@@ -262,9 +262,6 @@ export function construirDocumento(
     ),
   ];
 
-  const notacion =
-    opciones.notacion === "americana" ? "Notación americana" : "Notación latina";
-
   return {
     pageSize: "A4",
     pageOrientation: "portrait",
@@ -277,16 +274,19 @@ export function construirDocumento(
     info: { title: opciones.titulo, creator: "Cancionero" },
     defaultStyle: { font: FUENTE_TEXTO, fontSize: LETRA, lineHeight: 1.35 },
     content: contenido,
-    footer: (paginaActual: number) => ({
-      text: opciones.numeracion
-        ? `${notacion} · ${paginaActual}`
-        : notacion,
-      font: FUENTE_TEXTO,
-      fontSize: 9,
-      color: COLOR.text3,
-      alignment: "center",
-      margin: [0, 16, 0, 0],
-    }),
+    // Sin numeración no hay pie: la hoja del coro se queda limpia.
+    ...(opciones.numeracion
+      ? {
+          footer: (paginaActual: number): Content => ({
+            text: String(paginaActual),
+            font: FUENTE_TEXTO,
+            fontSize: 9,
+            color: COLOR.text3,
+            alignment: "center",
+            margin: [0, 16, 0, 0],
+          }),
+        }
+      : {}),
   };
 }
 
