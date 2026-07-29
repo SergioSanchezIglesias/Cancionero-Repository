@@ -12,6 +12,8 @@ node_modules/
 
 # Builds
 dist/
+out-tsc/
+.angular/
 *.tsbuildinfo
 
 # Tests
@@ -29,3 +31,6 @@ data/
 
 # Sistema
 .DS_Store
+
+# Posting
+posting

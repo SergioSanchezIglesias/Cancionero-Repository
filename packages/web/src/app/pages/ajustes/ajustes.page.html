@@ -1,0 +1,171 @@
+<header class="cabecera">
+  <div class="rotulo">
+    <h1 class="rotulo__titulo">Ajustes</h1>
+    <p class="rotulo__sub">Copia de seguridad de tu repertorio</p>
+  </div>
+</header>
+
+<div class="contenido">
+  <section class="panel">
+    <div class="panel__cabecera">
+      <span class="panel__sello">
+        <lucide-angular [img]="iconoEstado" [size]="18" />
+      </span>
+      <div>
+        <h2 class="panel__titulo">Estado de la copia</h2>
+        <p class="panel__sub">
+          Las copias se descargan a mano, cuando tú quieras.
+        </p>
+      </div>
+    </div>
+
+    @if (estado(); as datos) {
+      <dl class="datos">
+        <div class="dato">
+          <dt class="dato__nombre">Última copia</dt>
+          <dd class="dato__valor">{{ antiguedad() }}</dd>
+        </div>
+        <div class="dato">
+          <dt class="dato__nombre">Canciones en la biblioteca</dt>
+          <dd class="dato__valor">{{ datos.canciones }}</dd>
+        </div>
+      </dl>
+
+      @if (datos.hayCambiosSinRespaldar) {
+        <p class="aviso aviso--pendiente">
+          Tienes cambios sin respaldar. Descarga una copia para no perderlos.
+        </p>
+      }
+    } @else {
+      <p class="aviso">Consultando el estado de la copia…</p>
+    }
+  </section>
+
+  <section class="panel">
+    <div class="panel__cabecera">
+      <div>
+        <h2 class="panel__titulo">Descargar una copia</h2>
+        <p class="panel__sub">
+          Guárdala fuera de esta máquina: en tu ordenador, en un disco o en la
+          nube.
+        </p>
+      </div>
+    </div>
+
+    <div class="opcion">
+      <span class="opcion__sello">
+        <lucide-angular [img]="iconoBaseDeDatos" [size]="18" />
+      </span>
+
+      <div class="opcion__texto">
+        <h3 class="opcion__titulo">Base de datos completa (.db)</h3>
+        <p class="opcion__detalle">
+          Copia exacta del fichero SQLite, hecha con la aplicación en marcha.
+          Es la que devuelve la biblioteca tal y como estaba.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="boton boton--principal"
+        data-prueba="descargar-bd"
+        [disabled]="descargando()"
+        (click)="descargarBaseDeDatos()"
+      >
+        <lucide-angular [img]="iconoDescargar" [size]="16" />
+        Descargar
+      </button>
+    </div>
+
+    <div class="opcion">
+      <span class="opcion__sello">
+        <lucide-angular [img]="iconoJson" [size]="18" />
+      </span>
+
+      <div class="opcion__texto">
+        <h3 class="opcion__titulo">Respaldo en JSON (.json)</h3>
+        <p class="opcion__detalle">
+          Las canciones y sus etiquetas en texto legible. Sigue sirviendo
+          aunque el fichero de la base de datos se estropee.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="boton boton--secundario"
+        data-prueba="descargar-json"
+        [disabled]="descargando()"
+        (click)="descargarBiblioteca()"
+      >
+        <lucide-angular [img]="iconoDescargar" [size]="16" />
+        Descargar
+      </button>
+    </div>
+
+    @if (errorDescarga(); as textoDelError) {
+      <p class="aviso aviso--error">{{ textoDelError }}</p>
+    }
+  </section>
+
+  <section class="panel">
+    <div class="panel__cabecera">
+      <div>
+        <h2 class="panel__titulo">Restaurar desde un respaldo JSON</h2>
+        <p class="panel__sub">
+          Reemplaza <strong>todas</strong> las canciones actuales por las del
+          fichero.
+        </p>
+      </div>
+    </div>
+
+    <label class="selector">
+      <span class="selector__etiqueta">Fichero de respaldo</span>
+      <input
+        type="file"
+        class="selector__campo"
+        accept=".json,application/json"
+        (change)="alElegirFichero($event)"
+      />
+    </label>
+
+    <button
+      type="button"
+      class="confirmacion"
+      data-prueba="confirmar-reemplazo"
+      [class.confirmacion--marcada]="confirmado()"
+      [attr.aria-pressed]="confirmado()"
+      (click)="alternarConfirmacion()"
+    >
+      <span class="confirmacion__caja" aria-hidden="true"></span>
+      Entiendo que se perderán las canciones que haya ahora
+    </button>
+
+    <button
+      type="button"
+      class="boton boton--peligro"
+      data-prueba="restaurar"
+      [disabled]="!puedeRestaurar()"
+      (click)="restaurar()"
+    >
+      <lucide-angular [img]="iconoRestaurar" [size]="16" />
+      Restaurar la biblioteca
+    </button>
+
+    @if (errorRestauracion(); as textoDelError) {
+      <p class="aviso aviso--error">{{ textoDelError }}</p>
+    }
+
+    <!-- Comparación explícita: importar 0 canciones también hay que contarlo. -->
+    @if (importadas() !== null) {
+      <p class="aviso aviso--hecho">
+        Restaurado: {{ importadas() }}
+        {{ importadas() === 1 ? "canción" : "canciones" }} en la biblioteca.
+      </p>
+    }
+
+    <p class="nota">
+      Para restaurar una copia <code>.db</code> se sustituye el fichero de la
+      base de datos en el servidor y se reinicia la aplicación.
+    </p>
+  </section>
+</div>

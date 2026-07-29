@@ -1,0 +1,49 @@
+/*
+ * Sistema de diseño — PRD §15.
+ * Única fuente de verdad del color en la aplicación: ningún componente
+ * escribe un hexadecimal a mano, todos consumen estas variables.
+ */
+
+:root {
+  /* Nivel 1 · acción y estado activo */
+  --primary: #bf1525;
+  --primary-dark: #9e101f;
+  --primary-soft: #fceaec;
+  --chord: #bf1525;
+
+  /* Nivel 2 · clasificación (etiquetas) */
+  --ochre: #c2762b;
+  --ochre-soft: #fbf0e2;
+
+  /* Nivel 3 · información y superficies */
+  --bg: #ffffff;
+  --bg-warm: #fdf8f6;
+  --bg-warm-2: #faf0ec;
+  --border: #ede1dc;
+  --border-strong: #dfccc5;
+
+  /* Texto */
+  --text: #241c1a;
+  --text-2: #6e5c57;
+  --text-3: #a08f89;
+
+  /* Tipografía */
+  --font-display: "Fraunces Variable", "Fraunces", Georgia, serif;
+  --font-ui: "Inter Variable", "Inter", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Menlo", monospace;
+
+  /* Tamaños de texto de canción — PRD §15.5 */
+  --letra-visor: 18px;
+  --acorde-visor: 15px;
+  --letra-previa: 15.5px;
+  --acorde-previa: 13px;
+
+  /* Separación mínima entre dos acordes seguidos — PRD §15.4 */
+  --acorde-separacion: 11px;
+
+  /* Radios y sombras */
+  --radio-s: 6px;
+  --radio-m: 9px;
+  --radio-l: 12px;
+  --radio-pildora: 20px;
+}

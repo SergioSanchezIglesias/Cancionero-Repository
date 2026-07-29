@@ -1,0 +1,49 @@
+<div class="marca">
+  <span class="marca__sello">
+    <lucide-angular [img]="iconoMarca" [size]="20" />
+  </span>
+  <span class="marca__texto">
+    <span class="marca__nombre">Cancionero</span>
+    <span class="marca__parroquia">San Ildefonso</span>
+  </span>
+</div>
+
+<nav class="nav" aria-label="Secciones">
+  <a
+    class="nav__enlace"
+    routerLink="/biblioteca"
+    routerLinkActive="nav__enlace--activo"
+  >
+    <lucide-angular [img]="iconoBiblioteca" [size]="18" />
+    <span>Biblioteca</span>
+  </a>
+
+  <span class="nav__enlace nav__enlace--inactivo" aria-disabled="true">
+    <lucide-angular [img]="iconoCancioneros" [size]="18" />
+    <span>Cancioneros</span>
+    <span class="nav__pendiente">pronto</span>
+  </span>
+
+  <a
+    class="nav__enlace"
+    routerLink="/ajustes"
+    routerLinkActive="nav__enlace--activo"
+  >
+    <lucide-angular [img]="iconoAjustes" [size]="18" />
+    <span>Ajustes</span>
+  </a>
+</nav>
+
+<div class="relleno"></div>
+
+<a
+  class="respaldo"
+  [class.respaldo--pendiente]="hayCambiosSinRespaldar()"
+  routerLink="/ajustes"
+>
+  <span class="respaldo__titulo">
+    <lucide-angular [img]="iconoRespaldo" [size]="15" />
+    Copia de seguridad
+  </span>
+  <span class="respaldo__detalle">{{ detalle() }}</span>
+</a>

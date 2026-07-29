@@ -168,6 +168,7 @@ describe("aplicarMigraciones", () => {
       "001_esquema_inicial.sql",
       "002_semilla_etiquetas.sql",
       "003_busqueda_fts5.sql",
+      "004_ajustes.sql",
     ]);
   });
 });

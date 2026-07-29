@@ -9,7 +9,11 @@ import {
 const MAYORES_CON_BEMOLES = new Set<NotaLatina>(["FA"]);
 const MENORES_CON_BEMOLES = new Set<NotaLatina>(["RE", "SOL", "DO", "FA"]);
 
-const TONO_MAYOR = [
+/**
+ * Tonalidades mayores, una por cada grado de la escala cromática, con la
+ * enarmonía que le corresponde a cada una.
+ */
+export const TONOS_MAYORES = [
   "DO",
   "REb",
   "RE",
@@ -24,7 +28,8 @@ const TONO_MAYOR = [
   "SI",
 ] as const;
 
-const TONO_MENOR = [
+/** Las mismas doce tonalidades en modo menor. */
+export const TONOS_MENORES = [
   "DOm",
   "DO#m",
   "REm",
@@ -38,6 +43,9 @@ const TONO_MENOR = [
   "SIbm",
   "SIm",
 ] as const;
+
+/** Catálogo completo de tonos, para ofrecerlo donde haya que elegir uno. */
+export const TONOS: readonly string[] = [...TONOS_MAYORES, ...TONOS_MENORES];
 
 function esModoMenor(sufijo: string): boolean {
   const s = sufijo.toLowerCase();
@@ -69,5 +77,5 @@ export function transponerTono(tono: string, semitonos: number): string {
   const base = indiceCromatico(t.raiz, t.alteracion);
   const i = (((base + semitonos) % 12) + 12) % 12;
 
-  return (esModoMenor(t.sufijo) ? TONO_MENOR : TONO_MAYOR)[i] ?? tono;
+  return (esModoMenor(t.sufijo) ? TONOS_MENORES : TONOS_MAYORES)[i] ?? tono;
 }

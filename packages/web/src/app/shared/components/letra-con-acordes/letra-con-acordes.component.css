@@ -1,0 +1,67 @@
+:host {
+  display: block;
+  --letra: var(--letra-visor);
+  --acorde: var(--acorde-visor);
+  font-family: var(--font-ui);
+}
+
+:host(.es-previa) {
+  --letra: var(--letra-previa);
+  --acorde: var(--acorde-previa);
+}
+
+/*
+ * Cada línea es una secuencia horizontal de columnas y cada columna apila
+ * (acorde, fragmento de letra). Si el acorde es más ancho que su sílaba la
+ * columna crece y separa la letra: es el comportamiento correcto, igual que
+ * en los cantorales impresos.
+ */
+.linea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+/* Línea en blanco entre estrofas: ocupa el alto de una línea de letra. */
+.linea--vacia {
+  height: calc(var(--letra) * 1.35);
+}
+
+.linea--negrita .segmento__letra {
+  font-weight: 700;
+}
+
+.segmento {
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+ * El hueco del acorde tiene altura fija aunque esté vacío: es lo que mantiene
+ * alineadas entre sí todas las líneas de la canción.
+ */
+.segmento__acorde {
+  height: calc(var(--acorde) * 1.35);
+  padding-right: var(--acorde-separacion);
+  font-size: var(--acorde);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--chord);
+  white-space: pre;
+}
+
+/* Sin acorde no hay separación que reservar, o la letra se descuadraría. */
+.segmento__acorde--hueco {
+  padding-right: 0;
+}
+
+/*
+ * `pre` conserva los espacios en los límites del fragmento —el equivalente en
+ * el DOM al espacio duro— para que la sílaba no se desplace bajo su acorde.
+ */
+.segmento__letra {
+  font-size: var(--letra);
+  line-height: 1.35;
+  color: var(--text);
+  white-space: pre;
+}
